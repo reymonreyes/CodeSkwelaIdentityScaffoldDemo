@@ -1,0 +1,43 @@
+1. Scaffold using Identity.
+2. In Program.cs  file change connection string to
+from
+var connectionString = builder.Configuration.GetConnectionString("BlazorDeltaContextConnection")...
+to
+var connectionString = builder.Configuration.GetConnectionString("BlazorDeltaContext")...
+3. In Program.cs file add the following code right are the code in step 2.
+builder.Services.AddDbContext<QuickGridDemoIdentityContext>(options => options.UseSqlite(connectionString));
+4. In appsettings.json change the following
+from
+"BlazorDeltaContext": "Data Source=BlazorDeltaContext.db"
+to
+"BlazorDeltaContext": "Data Source=.\\Data\\BlazorDeltaContext.db"
+5. In App.razor add the following code
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private IComponentRenderMode? PageRenderMode =>
+        HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
+}
+6. In App.razor change the following
+from
+<HeadOutlet @rendermode="InteractiveServer" />
+<Routes @rendermode="InteractiveServer" />
+to
+<HeadOutlet @rendermode="PageRenderMode" />
+<Routes @rendermode="PageRenderMode" />
+7. In Components\Account\Pages\_Imports.razor
+add the following code
+@attribute [ExcludeFromInteractiveRouting]
+8. Open Package Manager Console run the command to generation the identity migrations
+Add-Migration CreateIdentitySchema -Context QuickGridDemoIdentityContext -OutputDir Data\Migrations
+
+Update-Database -Context QuickGridDemoIdentityContext
+9. In Suppliers.razor add this code test out restricting a blazor page
+@attribute [Authorize]
+10. in Counter.razor add this code to test out restricting a content
+<AuthorizeView>
+    <div>
+        This is a restricted content.
+    </div>
+</AuthorizeView>
