@@ -1,0 +1,67 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using QuickGridDemo.Models
+
+<PageTitle>Home</PageTitle>
+
+<Paginator State="pagination"></Paginator>
+<QuickGrid Items="filteredCars" Class="table table-bordered table-hover" Pagination="pagination">
+    <PropertyColumn Property="@(x => x.Id)"></PropertyColumn>
+    <PropertyColumn Property="@(x => x.Model)" Sortable="true">
+        <ColumnOptions>
+            <input type="search" @bind="carModelFilter" @bind:event="oninput" class="form-control" autofocus/>
+        </ColumnOptions>
+    </PropertyColumn>
+    <PropertyColumn Property="@(x => x.Manufacturer)" Sortable="true">
+        <ColumnOptions>
+            <input type="search" @bind="carManufacturerFilter" @bind:event="oninput" class="form-control" autofocus/>
+        </ColumnOptions>
+    </PropertyColumn>
+    <PropertyColumn Property="@(x => x.Year)" Sortable="true">
+        <ColumnOptions>
+            <input type="search" @bind="carYearFilter" @bind:event="oninput" class="form-control" autofocus />
+        </ColumnOptions>
+    </PropertyColumn>
+</QuickGrid>
+<Paginator State="pagination"></Paginator>
+
+@code
+{
+    IQueryable<Car> cars = new List<Car>()
+    {
+        new Car { Id = 1 ,  Model = "Cougar", Manufacturer = "Mercury", Year = "1992" },
+        new Car { Id = 2 ,  Model = "Relay", Manufacturer = "Saturn", Year = "2005" },
+        new Car { Id = 3 ,  Model = "M3", Manufacturer = "BMW", Year = "2004" },
+        new Car { Id = 4 ,  Model = "Express 3500", Manufacturer = "Chevrolet", Year = "1996" },
+        new Car { Id = 5 ,  Model = "X3", Manufacturer = "BMW", Year = "2007" },
+        new Car { Id = 6 ,  Model = "Probe", Manufacturer = "Ford", Year = "1993" },
+        new Car { Id = 7 ,  Model = "Grand Am", Manufacturer = "Pontiac", Year = "1993" },
+        new Car { Id = 8 ,  Model = "Talon", Manufacturer = "Eagle", Year = "1991" },
+        new Car { Id = 9 ,  Model = "Savana", Manufacturer = "GMC", Year = "2006" },
+        new Car { Id = 10,  Model = "Cirrus", Manufacturer = "Chrysler", Year = "2000" },
+        new Car { Id = 11,  Model = "E150", Manufacturer = "Ford", Year = "2011" },
+        new Car { Id = 12,  Model = "Escort", Manufacturer = "Ford", Year = "1985" },
+        new Car { Id = 13,  Model = "Montego", Manufacturer = "Mercury", Year = "2006" },
+        new Car { Id = 14,  Model = "Q7", Manufacturer = "Audi", Year = "2007" },
+        new Car { Id = 15,  Model = "Golf", Manufacturer = "Volkswagen", Year = "2006" },
+        new Car { Id = 16,  Model = "Dakota", Manufacturer = "Dodge", Year = "1995" },
+        new Car { Id = 17,  Model = "Concorde", Manufacturer = "Chrysler", Year = "2000" },
+        new Car { Id = 18,  Model = "Clubman", Manufacturer = "MINI", Year = "2009" },
+        new Car { Id = 19,  Model = "Tahoe", Manufacturer = "Chevrolet", Year = "2004" },
+        new Car { Id = 20,  Model = "Rio5", Manufacturer = "Kia", Year = "2008" },
+        new Car { Id = 21,  Model = "Civic Si", Manufacturer = "Honda", Year = "2003"},
+        new Car { Id = 22,  Model = "Venture", Manufacturer = "Chevrolet", Year = "2000"},
+        new Car { Id = 23,  Model = "Tacoma Xtra", Manufacturer = "Toyota", Year = "1996"},
+        new Car { Id = 24,  Model = "riolet", Manufacturer = "Audi", Year = "1998" },
+        new Car { Id = 25,  Model = "CLK-Class", Manufacturer = "Mercedes-Benz", Year = "1999" },
+        new Car { Id = 26,  Model = "Firefly", Manufacturer = "Pontiac", Year = "1988" }
+    }.AsQueryable();
+
+    IQueryable<Car>? filteredCars => cars.Where(x => x.Model.Contains(carModelFilter, StringComparison.InvariantCultureIgnoreCase) &&
+        x.Manufacturer.Contains(carManufacturerFilter, StringComparison.InvariantCultureIgnoreCase) &&
+        x.Year.Contains(carYearFilter, StringComparison.InvariantCultureIgnoreCase)
+    );
+    
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    string carModelFilter = string.Empty, carManufacturerFilter = string.Empty, carYearFilter = string.Empty;
+}
